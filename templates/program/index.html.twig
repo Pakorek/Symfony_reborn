@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello Wilders !{% endblock %}
+
+{% block body %}
+  <h1>{{ website }} index</h1>
+  <section class="programs_container">
+    {% for program in programs %}
+      <article>
+        <h3>{{ program.title }}</h3>
+        <em>{{ program.category.name }}</em>
+        <img src="{{ program.poster }}" alt="{{ program.title }}_poster">
+        <p>{{ program.summary }}</p>
+        <a href="{{ path("program_show", {id: program.id}) }}">See more</a>
+      </article>
+      {% else %}
+      <p>Any program found</p>
+    {% endfor %}
+  </section>
+  <a href="{{ path("home")}}">Go Home</a>
+{% endblock %}
