@@ -8,6 +8,15 @@
     <em>{{ program.category.name }}</em>
     <img src="{{ program.poster }}" alt="{{ program.title }}_poster">
     <p>{{ program.summary }}</p>
-    <a href="{{ path("program_index", {id: program.id}) }}">Go programs' list</a>
+    {% if nbSeasons is defined %}
+      <ul>
+        {% for loop in nbSeasons %}
+          <li><a href="{{ path("program_season_show", {program: program.id, seasonId: loop}) }}">Season {{ loop }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <a href="{{ path("program_index") }}">Go programs' list</a>
   </section>
 {% endblock %}

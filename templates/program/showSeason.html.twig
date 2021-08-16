@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello Wilders !{% endblock %}
+
+{% block body %}
+  <section class="season_container">
+    <header class="season_description">
+      <h1>{{ program.title }}</h1>
+
+      <h2>Season {{ season.number }}</h2>
+      <em>{{ season.year }}</em>
+      <p>{{ season.description }}</p>
+    </header>
+
+    <section class="episodes_container">
+      {% if episodes is defined %}
+        {% for episode in episodes %}
+          <article class="episode_item">
+            <h3>{{ episode.number }} - episode.title</h3>
+            <p>{{ episode.synopsis }}</p>
+          </article>
+        {% endfor %}
+      {% endif %}
+    </section>
+
+
+    <a href="{{ path("program_show", {id: program.id}) }}">Back to program</a>
+  </section>
+{% endblock %}
