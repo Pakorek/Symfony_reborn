@@ -15,7 +15,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 100px;
+  height: 200px;
 }
 .add_category form label {
   margin-right: 10px;

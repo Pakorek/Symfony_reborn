@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Program;
 use App\Entity\Season;
+use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,47 +18,71 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProgramController extends AbstractController
 {
-    private $programRepo;
+  private $programRepo;
 
-    public function __construct(ProgramRepository $programRepo)
-    {
-        $this->programRepo = $programRepo;
+  public function __construct(ProgramRepository $programRepo)
+  {
+    $this->programRepo = $programRepo;
+  }
+
+  /**
+   * Show all rows from Program's entity
+   *
+   * @Route("/", name="index")
+   * @return Response
+   */
+  public function index(): Response
+  {
+    $programs = $this->programRepo->findAll();
+
+    if (!$programs) {
+      throw $this->createNotFoundException(
+        'No program found :/'
+      );
     }
 
-    /**
-     * Show all rows from Program's entity
-     *
-     * @Route("/", name="index")
-     * @return Response
-     */
-    public function index(): Response
-    {
-        $programs = $this->programRepo->findAll();
+    return $this->render('program/index.html.twig', [
+      'website' => 'Wild Series',
+      'programs' => $programs
+    ]);
+  }
 
-        if (!$programs) {
-            throw $this->createNotFoundException(
-                'No program found :/'
-            );
-        }
+  /**
+   * @Route("/new", name="new")
+   *
+   * @param Request $request
+   * @return Response
+   */
+  public function new(Request $request): Response
+  {
+    $program = new Program();
 
-        return $this->render('program/index.html.twig', [
-            'website' => 'Wild Series',
-            'programs' => $programs
-        ]);
+    $form = $this->createForm(ProgramType::class, $program);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($program);
+      $em->flush();
+
+      return $this->redirectToRoute("program_index");
     }
 
-    /**
-     * @Route("/show/{program<\d+>}", name="show", methods={"GET"})
-     *
-     * @param Program $program
-     * @return Response
-     */
-    public function show(Program $program): Response
-    {
-        $nbSeasons = count($program->getSeasons());
+    return $this->render('program/new.html.twig', ['form' => $form->createView()]);
+  }
 
-        return $this->render('program/show.html.twig', ['program' => $program, "nbSeasons" => $nbSeasons]);
-    }
+  /**
+   * @Route("/show/{program<\d+>}", name="show", methods={"GET"})
+   *
+   * @param Program $program
+   * @return Response
+   */
+  public function show(Program $program): Response
+  {
+    $nbSeasons = count($program->getSeasons());
+
+    return $this->render('program/show.html.twig', ['program' => $program, "nbSeasons" => $nbSeasons]);
+  }
 
   /**
    * @Route("/show/{program<\d+>}/seasons/{seasonId<\d+>}", name="season_show")
@@ -66,13 +92,13 @@ class ProgramController extends AbstractController
    * @param SeasonRepository $seasonRepo
    * @return Response
    */
-    public function showSeason(Program $program, int $seasonId, SeasonRepository $seasonRepo)
-    {
-        $season = $seasonRepo->findOneBy([
-            "program_id" => $program->getId(),
-            "number" => $seasonId
-        ]);
+  public function showSeason(Program $program, int $seasonId, SeasonRepository $seasonRepo)
+  {
+    $season = $seasonRepo->findOneBy([
+      "program_id" => $program->getId(),
+      "number" => $seasonId
+    ]);
 
-        return $this->render("program/showSeason.html.twig", ["program" => $program, "season" => $season]);
-    }
+    return $this->render("program/showSeason.html.twig", ["program" => $program, "season" => $season]);
+  }
 }
