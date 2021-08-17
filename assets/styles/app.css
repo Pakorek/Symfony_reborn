@@ -2,6 +2,33 @@ body {
   background-color: lightgray;
 }
 
+.container {
+  width: 500px;
+  margin: 50px auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add_category form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 100px;
+}
+.add_category form label {
+  margin-right: 10px;
+}
+.add_category form input {
+  border-radius: 3px;
+}
+
+.categories-list ul {
+  padding-inline-start: 0;
+  list-style-type: none;
+}
+
 .programs_container {
   display: flex;
   flex-wrap: wrap;

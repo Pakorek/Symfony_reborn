@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CategoryController!{% endblock %}
+
+{% block body %}
+    <section class="container add_category">
+        <h1>New category</h1>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input id="submit" type="submit" value="add category">
+        {{ form_end(form) }}
+    </section>
+
+{% endblock %}
