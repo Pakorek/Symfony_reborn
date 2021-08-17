@@ -10,6 +10,13 @@ body {
   align-items: center;
 }
 
+.actors_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
 .add_category form {
   display: flex;
   flex-direction: column;
@@ -36,20 +43,20 @@ body {
   margin: 0 auto;
   justify-content: space-around;
 }
-.programs_container article {
+.programs_container > article {
   width: 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.programs_container article h3 {
+.programs_container > article h3 {
   text-align: center;
 }
-.programs_container article img {
+.programs_container > article img {
   width: 100%;
   height: auto;
 }
-.programs_container article p {
+.programs_container > article p {
   color: #777777;
 }
 

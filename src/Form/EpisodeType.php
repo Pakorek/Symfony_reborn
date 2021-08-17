@@ -26,7 +26,6 @@ class EpisodeType extends AbstractType
         'choice_label' => function (Season $season) {
           return $season->getProgram()->getTitle() . ': ' . $season->getNumber();
         }]);
-
   }
 
   public function configureOptions(OptionsResolver $resolver)

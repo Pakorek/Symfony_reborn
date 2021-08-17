@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Actor;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Form\ProgramType;
@@ -79,9 +80,15 @@ class ProgramController extends AbstractController
    */
   public function show(Program $program): Response
   {
-    $nbSeasons = count($program->getSeasons());
+    $seasons = $program->getSeasons();
 
-    return $this->render('program/show.html.twig', ['program' => $program, "nbSeasons" => $nbSeasons]);
+    $actors = $program->getActors();
+
+    return $this->render('program/show.html.twig', [
+      'program' => $program,
+      'seasons' => $seasons,
+      'actors' => $actors
+    ]);
   }
 
   /**
@@ -95,7 +102,7 @@ class ProgramController extends AbstractController
   public function showSeason(Program $program, int $seasonId, SeasonRepository $seasonRepo)
   {
     $season = $seasonRepo->findOneBy([
-      "program_id" => $program->getId(),
+      "program" => $program,
       "number" => $seasonId
     ]);
 

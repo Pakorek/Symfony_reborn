@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello Wilders !{% endblock %}
+
+{% block body %}
+  <section class="actor_container">
+  <h1>{{ actor.name }}</h1>
+
+    <code>Description...</code>
+    <ul>
+      {% for program in actor.programs %}
+        <li><a href="{{ path('program_show', {program: program.id}) }}">{{ program.title }}</a></li>
+      {% endfor %}
+    </ul>
+
+    <a href="{{ path("actor_index") }}">All actors</a>
+  </section>
+{% endblock %}
