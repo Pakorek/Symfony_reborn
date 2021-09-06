@@ -8,6 +8,7 @@ use App\Entity\Season;
 use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
+use App\Service\Slugify;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,9 +53,10 @@ class ProgramController extends AbstractController
    * @Route("/new", name="new")
    *
    * @param Request $request
+   * @param Slugify $slugify
    * @return Response
    */
-  public function new(Request $request): Response
+  public function new(Request $request, Slugify $slugify): Response
   {
     $program = new Program();
 
@@ -62,6 +64,7 @@ class ProgramController extends AbstractController
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+      $program->setSlug($slugify->generate($program->getTitle()));
       $em = $this->getDoctrine()->getManager();
       $em->persist($program);
       $em->flush();
@@ -73,7 +76,7 @@ class ProgramController extends AbstractController
   }
 
   /**
-   * @Route("/show/{program<\d+>}", name="show", methods={"GET"})
+   * @Route("/show/{slug}", name="show", methods={"GET"})
    *
    * @param Program $program
    * @return Response
@@ -92,7 +95,7 @@ class ProgramController extends AbstractController
   }
 
   /**
-   * @Route("/show/{program<\d+>}/seasons/{seasonId<\d+>}", name="season_show")
+   * @Route("/show/{slug}/seasons/{seasonId<\d+>}", name="season_show")
    *
    * @param Program $program
    * @param int $seasonId
