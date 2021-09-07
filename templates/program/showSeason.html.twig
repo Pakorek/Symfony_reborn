@@ -13,11 +13,23 @@
     </header>
 
     <section class="episodes_container">
-      {% if episodes is defined %}
-        {% for episode in episodes %}
+      {% if season.episodes is not null %}
+        {% for episode in season.episodes %}
           <article class="episode_item">
             <h3>{{ episode.title }} - episode.title</h3>
             <p>{{ episode.synopsis }}</p>
+            <hr>
+            <h4>Comments</h4>
+            {% for comment in episode.comments %}
+              <em>{{ comment.user.email }} : {{ comment.rate }} / 5 - {{ comment.comment }}</em>
+              <br>
+            {% else %}
+              <em>No comments</em>
+            {% endfor %}
+            <br>
+            {% if app.user %}
+              <a href="{{ path('comment_new', {slug: episode.slug}) }}">Add comment</a>
+            {% endif %}
           </article>
         {% endfor %}
       {% endif %}
