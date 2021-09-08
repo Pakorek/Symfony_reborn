@@ -27,7 +27,8 @@ class EmailVerifier
     {
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             $verifyEmailRouteName,
-            $user->getId()
+            $user->getId(),
+            $user->getEmail()
         );
 
         $context = $email->getContext();

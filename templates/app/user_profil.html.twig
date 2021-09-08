@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+  <h1>My profil</h1>
+  <p>Email: <em>{{ app.user.email }}</em></p>
+  <input type="checkbox" name="verified" id="verified" {{ app.user.verified ? 'checked' : '' }}>
+  <label for="verified">Verified</label>
+  <br><br>
+  <a href="{{ path('home') }}">Go home</a>
+{% endblock %}

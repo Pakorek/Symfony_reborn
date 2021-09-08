@@ -7,6 +7,7 @@ use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\User;
 use App\Form\ProgramType;
+use App\Form\SearchProgramFormType;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use App\Service\Slugify;
@@ -25,7 +26,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class ProgramController extends AbstractController
 {
-  private $programRepo;
+  private ProgramRepository $programRepo;
 
   public function __construct(ProgramRepository $programRepo)
   {
@@ -36,9 +37,10 @@ class ProgramController extends AbstractController
    * Show all rows from Program's entity
    *
    * @Route("/", name="index")
+   * @param Request $request
    * @return Response
    */
-  public function index(): Response
+  public function index(Request $request): Response
   {
     $programs = $this->programRepo->findAll();
 
@@ -48,9 +50,20 @@ class ProgramController extends AbstractController
       );
     }
 
+    $form = $this->createForm(SearchProgramFormType::class);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      //...
+      $search = $form->getData()['search'];
+      $founded = $this->programRepo->findLikeName($search);
+      if ($founded) $programs = $founded;
+    }
+
     return $this->render('program/index.html.twig', [
       'website' => 'Wild Series',
-      'programs' => $programs
+      'programs' => $programs,
+      'form' => $form->createView()
     ]);
   }
 
@@ -84,8 +97,7 @@ class ProgramController extends AbstractController
         ->from($this->getParameter('mailer_from'))
         ->to($this->getParameter('mailer_to'))
         ->subject('New program added !')
-        ->html($this->renderView('program/newProgramEmail.html.twig', ['program' => $program]))
-        ;
+        ->html($this->renderView('program/newProgramEmail.html.twig', ['program' => $program]));
 
       $mailer->send($email);
 

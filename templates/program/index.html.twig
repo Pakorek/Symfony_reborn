@@ -4,6 +4,12 @@
 
 {% block body %}
   <h1>{{ website }} index</h1>
+  <div>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Search') }}</button>
+    {{ form_end(form) }}
+  </div>
   <section class="programs_container">
     {% for program in programs %}
       <article>
@@ -16,9 +22,9 @@
           <a href="{{ path('program_edit', { slug: program.slug }) }}">Edit</a>
         {% endif %}
       </article>
-      {% else %}
+    {% else %}
       <p>Any program found</p>
     {% endfor %}
   </section>
-  <a href="{{ path("home")}}">Go Home</a>
+  <a href="{{ path("home") }}">Go Home</a>
 {% endblock %}
