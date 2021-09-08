@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Actor;
 use App\Entity\Program;
 use App\Entity\Season;
+use App\Entity\User;
 use App\Form\ProgramType;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/program", name="program_")
@@ -63,6 +65,9 @@ class ProgramController extends AbstractController
    */
   public function new(Request $request, Slugify $slugify, MailerInterface $mailer): Response
   {
+    /** @var User $user */
+    $user = $this->getUser();
+
     $program = new Program();
 
     $form = $this->createForm(ProgramType::class, $program);
@@ -70,6 +75,7 @@ class ProgramController extends AbstractController
 
     if ($form->isSubmitted() && $form->isValid()) {
       $program->setSlug($slugify->generate($program->getTitle()));
+      $program->setOwner($user);
       $em = $this->getDoctrine()->getManager();
       $em->persist($program);
       $em->flush();
@@ -125,4 +131,33 @@ class ProgramController extends AbstractController
 
     return $this->render("program/showSeason.html.twig", ["program" => $program, "season" => $season]);
   }
+
+  /**
+   * @Route("/{slug}/edit", name="edit", methods={"GET","POST"})
+   *
+   * @param Request $request
+   * @param Program $program
+   * @return Response
+   */
+  public function edit(Request $request, Program $program): Response
+  {
+    if (!($this->getUser() == $program->getOwner())) {
+      throw new AccessDeniedException('You\'r not allowed to edit this program !');
+    }
+
+    $form = $this->createForm(ProgramType::class, $program);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      $this->getDoctrine()->getManager()->flush();
+
+      return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->renderForm('program/edit.html.twig', [
+      'program' => $program,
+      'form' => $form,
+    ]);
+  }
+
 }

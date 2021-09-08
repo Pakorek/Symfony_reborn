@@ -11,7 +11,10 @@
         <em>{{ program.category.name }}</em>
         <img src="{{ program.poster }}" alt="{{ program.title }}_poster">
         <p>{{ program.summary }}</p>
-        <a href="{{ path("program_show", {slug: program.slug}) }}">See more</a>
+        <a href="{{ path("program_show", { slug: program.slug }) }}">See more</a>
+        {% if app.user == program.owner %}
+          <a href="{{ path('program_edit', { slug: program.slug }) }}">Edit</a>
+        {% endif %}
       </article>
       {% else %}
       <p>Any program found</p>

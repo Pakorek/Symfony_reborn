@@ -8,6 +8,7 @@
     <em>{{ program.category.name }}</em>
     <img src="{{ program.poster }}" alt="{{ program.title }}_poster">
     <p>{{ program.summary }}</p>
+    <em>Posted by: {{ program.owner.email }}</em>
     {% if seasons is defined %}
       <ul>
         {% for season in seasons %}
