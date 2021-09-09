@@ -10,3 +10,25 @@ import './styles/app.scss';
 
 // start the Stimulus application
 import './bootstrap';
+
+console.log('app.js worked');
+
+document.querySelector("#watchlist").addEventListener('click', switchToWatchlist);
+
+function switchToWatchlist(e) {
+    e.preventDefault();
+    const watchlistDOM = e.currentTarget;
+    const link = watchlistDOM.href;
+
+    fetch(link)
+        .then((res) => res.json())
+        .then(res  => {
+            if (res.isInWatchlist) {
+                console.log('remove to fave')
+                watchlistDOM.innerHTML = "Remove to fav"
+            } else {
+                console.log('add to fave')
+                watchlistDOM.innerHTML = "Add to fav"
+            }
+        })
+}
