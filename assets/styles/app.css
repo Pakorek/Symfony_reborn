@@ -31,6 +31,12 @@ body {
   border-radius: 3px;
 }
 
+.alert-success {
+  background-color: lightgreen;
+  color: darkgreen;
+  text-align: center;
+}
+
 .categories-list ul {
   padding-inline-start: 0;
   list-style-type: none;

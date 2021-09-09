@@ -27,6 +27,8 @@ class ProgramRepository extends ServiceEntityRepository
   {
     return $this->createQueryBuilder('p')
       ->andWhere('p.title LIKE :name')
+      ->orWhere('a.name LIKE :name')
+      ->join('p.actors', 'a')
       ->setParameter('name', '%' . $value . '%')
       ->orderBy('p.title', 'ASC')
       ->getQuery()

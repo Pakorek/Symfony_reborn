@@ -5,6 +5,16 @@
 {% block body %}
   <section class="program_container">
     <h1>{{ program.title }}</h1>
+    {% if app.user %}
+      <a href="{{ path('program_switch_watchlist', {slug: program.slug}) }}">
+        {% if app.user.isInWatchlist(program) %}
+          Remove to fav
+        {% else %}
+          Add to fav
+        {% endif %}
+      </a>
+    {% endif %}
+    <br>
     <em>{{ program.category.name }}</em>
     <img src="{{ program.poster }}" alt="{{ program.title }}_poster">
     <p>{{ program.summary }}</p>
@@ -13,7 +23,9 @@
       <ul>
         {% for season in seasons %}
           <li>
-            <a href="{{ path("program_season_show", {slug: program.slug, seasonId: season.number }) }}">Season {{ season.number }} - {{ season.year }}</a>
+            <a
+              href="{{ path("program_season_show", {slug: program.slug, seasonId: season.number }) }}">Season {{ season.number }}
+              - {{ season.year }}</a>
           </li>
         {% endfor %}
       </ul>

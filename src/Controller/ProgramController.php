@@ -11,6 +11,7 @@ use App\Form\SearchProgramFormType;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use App\Service\Slugify;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,6 +94,8 @@ class ProgramController extends AbstractController
       $em->persist($program);
       $em->flush();
 
+      $this->addFlash('success', 'The new program has been created');
+
       $email = (new Email())
         ->from($this->getParameter('mailer_from'))
         ->to($this->getParameter('mailer_to'))
@@ -170,6 +173,28 @@ class ProgramController extends AbstractController
       'program' => $program,
       'form' => $form,
     ]);
+  }
+
+  /**
+   * @Route("/{slug}/watchlist", name="switch_watchlist")
+   *
+   * @param Program $program
+   * @param EntityManagerInterface $em
+   * @return Response
+   */
+  public function switchWatchlist(Program $program, EntityManagerInterface $em): Response
+  {
+    /** @var User $user */
+    $user = $this->getUser();
+
+    if ($user->isInWatchlist($program)) {
+      $user->removeWatchlist($program);
+    } else {
+      $user->addWatchlist($program);
+    }
+    $em->flush();
+
+    return $this->redirectToRoute("program_show", ["slug" => $program->getSlug()]);
   }
 
 }
